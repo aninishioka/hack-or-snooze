@@ -51,24 +51,6 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
-/** Pulls new story data from input form and returns an object containing
- *  the data {author, title, url} */
-
-function getNewStoryFormInputs() {
-  return {
-    author: $submitStoryFormAuthor.val(),
-    title: $submitStoryFormTitle.val(),
-    url: $submitStoryFormUrl.val(),
-  };
-}
-
-/** Takes story instance as input and appends it to the DOM */
-
-function displayNewStory(story) {
-  const $newStory = generateStoryMarkup(story);
-  $allStoriesList.append($newStory);
-}
-
 /** Clears new story form and hides it */
 
 function clearAndHideNewStoryForm() {
@@ -80,12 +62,18 @@ function clearAndHideNewStoryForm() {
 * Pulls story data from form, creates new story from that data, appends
  * new story to page, and then clears and hides form */
 
-async function handleSubmitStoryButtonClick(evt) {
+async function handleNewStorySubmit(evt) {
   evt.preventDefault();
-  const storyInputs = getNewStoryFormInputs();
+  const storyInputs = {
+    author: $submitStoryFormAuthor.val(),
+    title: $submitStoryFormTitle.val(),
+    url: $submitStoryFormUrl.val(),
+  };
+
   const newStory = await storyList.addStory(currentUser, storyInputs);
-  displayNewStory(newStory);
+  const $newStory = generateStoryMarkup(newStory);
+  $allStoriesList.prepend($newStory);
   clearAndHideNewStoryForm();
 }
 
-$submitStoryForm.on("submit", handleSubmitStoryButtonClick);
+$submitStoryForm.on("submit", handleNewStorySubmit);

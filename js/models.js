@@ -24,8 +24,7 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // FIXME: complete this function!
-    return "hostname.com";
+    return (new URL(this.url)).hostname;
   }
 }
 
@@ -73,10 +72,10 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory(user, newStory) {
+  async addStory(user, story) {
     const response = await fetch(`${BASE_URL}/stories`, {
       method: "POST",
-      body: JSON.stringify({token: user.loginToken, story: newStory}),
+      body: JSON.stringify({token: user.loginToken, story}),
       headers: {
         "Content-Type": "application/json"
       }

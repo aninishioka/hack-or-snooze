@@ -31,7 +31,7 @@ $navLogin.on("click", navLoginClick);
 
 function navSubmitClick(evt) {
   evt.preventDefault();
-  $submitStoryForm.show();
+  $submitStoryForm.slideToggle();
 }
 
 $navSubmitStory.on("click", navSubmitClick);
