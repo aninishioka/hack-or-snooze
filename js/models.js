@@ -211,22 +211,30 @@ class User {
   }
 
   async addFavorite(story) {
-    const resp = await fetch(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
-      {
-        body: JSON.stringify({ token: this.loginToken }),
-        method: "POST",
-        headers: { "Content-Type": "application/json charset=utf-8" }
-      },
-    );
-    if (resp.ok) {
-      this.favorites.push(story);
-    } else {
-      console.log("Add favorite failed :(")
-    }
 
+    const resp = await fetch(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
+      body: JSON.stringify({ token: this.loginToken }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const userData = await resp.json();
+    this.favorites = userData.user.favorites;
   }
+
+
 
   async removeFavorite(story) {
 
+    const resp = await fetch(
+      `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
+      {
+        body: JSON.stringify({ token: this.loginToken }),
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+      });
+
+    const userData = await resp.json();
+    this.favorites = userData.user.favorites;
   }
 }
