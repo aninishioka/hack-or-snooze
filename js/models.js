@@ -75,7 +75,7 @@ class StoryList {
   async addStory(user, story) {
     const response = await fetch(`${BASE_URL}/stories`, {
       method: "POST",
-      body: JSON.stringify({token: user.loginToken, story}),
+      body: JSON.stringify({ token: user.loginToken, story }),
       headers: {
         "Content-Type": "application/json"
       }
@@ -208,5 +208,25 @@ class User {
       console.error("loginViaStoredCredentials failed", err);
       return null;
     }
+  }
+
+  async addFavorite(story) {
+    const resp = await fetch(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
+      {
+        body: JSON.stringify({ token: this.loginToken }),
+        method: "POST",
+        headers: { "Content-Type": "application/json charset=utf-8" }
+      },
+    );
+    if (resp.ok) {
+      this.favorites.push(story);
+    } else {
+      console.log("Add favorite failed :(")
+    }
+
+  }
+
+  async removeFavorite(story) {
+
   }
 }
