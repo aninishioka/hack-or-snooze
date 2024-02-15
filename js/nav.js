@@ -27,9 +27,11 @@ function navLoginClick(evt) {
 
 $navLogin.on("click", navLoginClick);
 
+/** Show submit new story form on click of "submit */
+
 function navSubmitClick(evt) {
+  evt.preventDefault();
   $submitStoryForm.show();
-  console.debug("navSubmitStory", evt);
 }
 
 $navSubmitStory.on("click", navSubmitClick);
