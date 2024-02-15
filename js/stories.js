@@ -50,3 +50,31 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+async function handleSubmitStoryButtonClick(evt) {
+  evt.preventDefault();
+  const storyInputs = getNewStoryFormInputs();
+  const newStory = await storyList.addStory(currentUser, storyInputs);
+  displayNewStory(newStory);
+  clearAndHideNewStoryForm();
+}
+
+function getNewStoryFormInputs() {
+  return {
+    author: $submitStoryFormAuthor.val(),
+    title: $submitStoryFormTitle.val(),
+    url: $submitStoryFormUrl.val(),
+  };
+}
+
+function displayNewStory(story) {
+  const $story = generateStoryMarkup(story);
+  $allStoriesList.append($story);
+}
+
+function clearAndHideNewStoryForm() {
+  $submitStoryForm.trigger("reset");
+  $submitStoryForm.hide();
+}
+
+$submitStoryFormButton.on("click", handleSubmitStoryButtonClick);

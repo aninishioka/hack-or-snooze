@@ -1,6 +1,4 @@
 "use strict";
-
-console.log("HEREEEEE");
 // So we don't have to keep re-finding things on page, find DOM elements once:
 
 const $body = $("body");
@@ -11,6 +9,10 @@ const $allStoriesList = $("#all-stories-list");
 const $loginForm = $("#login-form");
 const $signupForm = $("#signup-form");
 const $submitStoryForm = $('#new-story-form');
+const $submitStoryFormButton = $("#new-story-form-button")
+const $submitStoryFormAuthor = $("#story-author");
+const $submitStoryFormTitle = $("#story-title");
+const $submitStoryFormUrl = $("#story-url");
 
 const $navLogin = $("#nav-login");
 const $navUserProfile = $("#nav-user-profile");

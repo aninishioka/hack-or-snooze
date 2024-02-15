@@ -82,7 +82,7 @@ class StoryList {
       }
     });
     const storyData = await response.json();
-    const storyInstance = new Story(storyData);
+    const storyInstance = new Story(storyData.story);
     this.stories.push(storyInstance);
     return storyInstance;
   }
