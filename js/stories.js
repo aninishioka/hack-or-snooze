@@ -51,6 +51,22 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+/** Gets list of favorite stories, generates their HTML, and puts on page. */
+
+function putFavoriteStoriesOnPage() {
+  console.debug("putFavoriteStoriesOnPage");
+
+  $favoriteStoriesList.empty();
+
+  // loop through all of our stories and generate HTML for them
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $favoriteStoriesList.append($story);
+  }
+
+  $favoriteStoriesList.show();
+}
+
 /** Clears new story form and hides it */
 
 function clearAndHideNewStoryForm() {
