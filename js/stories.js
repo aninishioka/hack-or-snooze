@@ -19,19 +19,20 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story, isFav) {
+function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
+  const isFav = currentUser.favorites.some(favorite =>
+    favorite.storyId === story.storyId);
 
-  const fillStarOrNot = isFav ? "bi-star-fill" : "bi-star";
-  const starOrNot = currentUser
-    ? `<i class="bi ${fillStarOrNot} favorite-star"></i>`
+  const starIcon = currentUser
+    ? `<i class="bi ${isFav ? "bi-star-fill" : "bi-star"} favorite-star"></i>`
     : "";
 
   const hostName = story.getHostName();
 
   return $(`
       <li id="${story.storyId}">
-        ${starOrNot}
+        ${starIcon}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -49,13 +50,9 @@ function putStoriesOnPage() {
 
   $allStoriesList.empty();
 
-  const favorites = currentUser ? currentUser.favorites : [];
-  const favoriteIds = favorites.map(story => story.storyId);
-  const favoriteIdsSet = new Set(favoriteIds);
-
   // loop through all of our stories and generate HTML for them
   for (let story of storyList.stories) {
-    const $story = generateStoryMarkup(story, favoriteIdsSet.has(story.storyId));
+    const $story = generateStoryMarkup(story);
     $allStoriesList.append($story);
   }
 
@@ -71,7 +68,7 @@ function putFavoriteStoriesOnPage() {
 
   // loop through all of our stories and generate HTML for them
   for (let story of currentUser.favorites) {
-    const $story = generateStoryMarkup(story, true);
+    const $story = generateStoryMarkup(story);
     $favoriteStoriesList.append($story);
   }
 
@@ -108,14 +105,18 @@ $submitStoryForm.on("submit", handleNewStorySubmit);
 /** Updates star button icon and adds/removes favorite on star button click. */
 async function handleStarClick(evt) {
   const storyId = $(evt.target).parent().attr("id");
-  const selectedStory = storyList.getStoryById(storyId);
+  const selectedStory = await Story.getStoryById(storyId);
 
-  if ($(evt.target).hasClass("bi-star")) {
-    currentUser.addFavorite(selectedStory);
-  } else {
-    currentUser.removeFavorite(selectedStory);
+  try {
+    if ($(evt.target).hasClass("bi-star")) {
+      await currentUser.addFavorite(selectedStory);
+    } else {
+      await currentUser.removeFavorite(selectedStory);
+    }
+    $(evt.target).toggleClass("bi-star-fill bi-star");
+  } catch (err) {
+    console.log(err);
   }
-  $(evt.target).toggleClass("bi-star-fill bi-star");
 }
 
 $storiesContainer.on("click", ".favorite-star", handleStarClick);

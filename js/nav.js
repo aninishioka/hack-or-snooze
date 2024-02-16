@@ -47,7 +47,8 @@ function updateNavOnLogin() {
 }
 
 /** Show favorite stories list on click of "favorites" */
-function navFavoritesClick() {
+function navFavoritesClick(evt) {
+  evt.preventDefault();
   hidePageComponents();
   putFavoriteStoriesOnPage();
 }

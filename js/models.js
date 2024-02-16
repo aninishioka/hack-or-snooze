@@ -26,6 +26,14 @@ class Story {
   getHostName() {
     return (new URL(this.url)).hostname;
   }
+
+  /** Takes storyID, makes fetch request to API to get story data, and returns
+   * new story instance created with story data. */
+  static async getStoryById(storyId) {
+    const resp = await fetch(`${BASE_URL}/stories/${storyId}`);
+    const storyData = await resp.json();
+    return new Story(storyData.story);
+  }
 }
 
 
@@ -218,8 +226,8 @@ class User {
     const resp = await fetch(
       `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
       {
-        body: JSON.stringify({ token: this.loginToken }),
         method: "POST",
+        body: JSON.stringify({ token: this.loginToken }),
         headers: { "Content-Type": "application/json" }
       });
 
@@ -236,24 +244,21 @@ class User {
   * user instance's favorites. */
 
   async removeFavorite(story) {
-
     const resp = await fetch(
       `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
       {
-        body: JSON.stringify({ token: this.loginToken }),
         method: "DELETE",
+        body: JSON.stringify({ token: this.loginToken }),
         headers: { "Content-Type": "application/json" }
       });
 
-      if (resp.ok) {
-        // Splice out the story from users favorites list that matches the input
-        const indexOfMatchingStory = this.favorites.findIndex(
-          favorite => favorite.storyId === story.storyId);
-
-        this.favorites.splice(indexOfMatchingStory, 1);
-      } else {
-        throw new Error("Remove favorite didn't work :(");
-      }
+    if (resp.ok) {
+      // Remove the story from users favorites list that matches the input
+      this.favorites = this.favorites.filter(favorite =>
+          favorite.storyId !== story.storyId);
+    } else {
+      throw new Error("Remove favorite didn't work :(");
+    }
 
   }
 }
