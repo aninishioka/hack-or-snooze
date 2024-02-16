@@ -95,10 +95,34 @@ class StoryList {
     return storyInstance;
   }
 
+  async getNextStoryIndex() {
+    const storiesLen = this.stories.length;
+    const qs = new URLSearchParams({skip: storiesLen-1, limit: 1});
+    const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
+      method: "GET",
+    });
+    const storyData = await resp.json();
+    const respStoryId = storyData.stories[0].storyId;
+    if (respStoryId === this.stories[storiesLen-1].storyId) {
+      return storiesLen;
+    }
+
+    //if fetched story exists in story list, know that there has been addition
+    //else story has been deleted
+    if (storyList.stories.some(story => story.storyId === respStoryId)) {
+
+    } else {
+
+    }
+  }
+
   /** Makes call to API to get the next 25 stories, adds them to this.stories */
 
   async getExtraStories() {
-    const qs = new URLSearchParams({skip: this.stories.length});
+    const nextStoryIndex = await this.getNextStoryIndex() || this.stories.length;
+    console.log("stories length=",this.stories.length);
+    console.log("next index=",nextStoryIndex);
+    const qs = new URLSearchParams({skip: nextStoryIndex});
     const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
       method: "GET",
     })
