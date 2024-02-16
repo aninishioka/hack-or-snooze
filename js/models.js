@@ -210,9 +210,8 @@ class User {
     }
   }
 
-  /** Sends
-   *
-   */
+  /** Sends POST request to add story to favorites and updates current
+   * user instance's favorites. */
 
   async addFavorite(storyId) {
     const resp = await fetch(
@@ -228,7 +227,8 @@ class User {
   }
 
 
-
+  /** Send DELETE request to remove story to favorites and updates current
+  * user instance's favorites. */
   async removeFavorite(storyId) {
 
     const resp = await fetch(

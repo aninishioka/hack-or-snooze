@@ -52,7 +52,7 @@ function putStoriesOnPage() {
 
   const favorites = currentUser ? currentUser.favorites : [];
   const favoriteIds = favorites.map(story => story.storyId);
-  let favoriteIdsSet = new Set(favoriteIds);
+  const favoriteIdsSet = new Set(favoriteIds);
 
   // loop through all of our stories and generate HTML for them
   for (let story of storyList.stories) {
@@ -106,7 +106,7 @@ async function handleNewStorySubmit(evt) {
 
 $submitStoryForm.on("submit", handleNewStorySubmit);
 
-
+/** Updates star button icon and adds/removes favorite on star button click. */
 async function handleStarClick(evt) {
   const storyId = $(evt.target).parent().attr("id");
 
@@ -116,7 +116,6 @@ async function handleStarClick(evt) {
     currentUser.removeFavorite(storyId);
   }
   $(evt.target).toggleClass("bi-star-fill bi-star");
-  return;
 }
 
 $storiesContainer.on("click", ".favorite-star", handleStarClick);
