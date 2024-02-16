@@ -60,8 +60,10 @@ class StoryList {
     //  class directly. Why doesn't it make sense for getStories to be an
     //  instance method?
 
+    const qs = new URLSearchParams({skip});
+
     // query the /stories endpoint (no auth required)
-    const response = await fetch(`${BASE_URL}/stories`, {
+    const response = await fetch(`${BASE_URL}/stories?${qs}`, {
       method: "GET",
     });
     const storiesData = await response.json();
@@ -71,6 +73,7 @@ class StoryList {
 
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
+
   }
 
   /** Adds story data to API, makes a Story instance, adds it to story list.
@@ -92,6 +95,14 @@ class StoryList {
     const storyInstance = new Story(storyData.story);
     this.stories.unshift(storyInstance);
     return storyInstance;
+  }
+
+  /** Makes call to API to get the next 25 stories, adds them to this.stories
+   * and returns the index that the new stories start at */
+
+  async getExtraStories() {
+    // TODO: Write this function
+    return;
   }
 
 }

@@ -60,3 +60,10 @@ console.warn("HEY STUDENT: This program sends many debug messages to" +
   " seeing those helpful debug messages. In your browser console, click on" +
   " menu 'Default Levels' and add Verbose");
 $(start);
+
+// From https://stackoverflow.com/questions/9439725/how-to-detect-if-browser-window-is-scrolled-to-bottom
+window.onscroll = function(ev) {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      getAndShowMoreStories();
+  }
+};

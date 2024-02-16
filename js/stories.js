@@ -12,6 +12,13 @@ async function getAndShowStoriesOnStart() {
   putStoriesOnPage();
 }
 
+/** Get and show more stories when user scrolls to bottom of page */
+
+async function getAndShowMoreStories() {
+  // Call storyList.getExtra and saves the index
+  // Call putExtrastoriesonpage with that index
+}
+
 /**
  * A render method to render HTML for an individual Story instance
  * - story: an instance of Story
@@ -57,6 +64,14 @@ function putStoriesOnPage() {
   }
 
   $allStoriesList.show();
+}
+
+/** Takes in an index. Adds all stories from storyList
+ * starting at that index to the page. */
+
+function putExtraStoriesOnPage(startingIndex) {
+  // TODO: Write this function
+  return;
 }
 
 /** Gets list of favorite stories, generates their HTML, and puts on page. */
