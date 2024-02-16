@@ -111,6 +111,7 @@ function saveUserCredentialsInLocalStorage() {
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
+  getAndShowStoriesOnStart();
   $allStoriesList.show();
   $(".account-forms-container").hide();
   updateNavOnLogin();

@@ -22,9 +22,15 @@ async function getAndShowStoriesOnStart() {
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
 
+  const starOrNot = currentUser ?
+    `<i class="bi bi-star favorite-star"></i>` :
+    "";
+
+
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+        ${starOrNot}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -93,3 +99,10 @@ async function handleNewStorySubmit(evt) {
 }
 
 $submitStoryForm.on("submit", handleNewStorySubmit);
+
+
+async function handleStarClick(evt) {
+  return;
+}
+
+$storiesContainer.on("click", ".favorite-star", handleStarClick);
