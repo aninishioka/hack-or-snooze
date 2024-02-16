@@ -22,14 +22,13 @@ async function getAndShowStoriesOnStart() {
 function generateStoryMarkup(story, isFav) {
   // console.debug("generateStoryMarkup", story);
 
-  const fillOrNotClass = isFav ? "bi-star-fill" : "bi-star";
-
+  const fillStarOrNot = isFav ? "bi-star-fill" : "bi-star";
   const starOrNot = currentUser
-    ? `<i class="bi ${fillOrNotClass} favorite-star"></i>`
+    ? `<i class="bi ${fillStarOrNot} favorite-star"></i>`
     : "";
 
-
   const hostName = story.getHostName();
+
   return $(`
       <li id="${story.storyId}">
         ${starOrNot}
@@ -109,11 +108,12 @@ $submitStoryForm.on("submit", handleNewStorySubmit);
 /** Updates star button icon and adds/removes favorite on star button click. */
 async function handleStarClick(evt) {
   const storyId = $(evt.target).parent().attr("id");
+  const selectedStory = storyList.getStoryById(storyId);
 
   if ($(evt.target).hasClass("bi-star")) {
-    currentUser.addFavorite(storyId);
+    currentUser.addFavorite(selectedStory);
   } else {
-    currentUser.removeFavorite(storyId);
+    currentUser.removeFavorite(selectedStory);
   }
   $(evt.target).toggleClass("bi-star-fill bi-star");
 }

@@ -85,6 +85,7 @@ class StoryList {
     this.stories.unshift(storyInstance);
     return storyInstance;
   }
+
 }
 
 
@@ -213,33 +214,46 @@ class User {
   /** Sends POST request to add story to favorites and updates current
    * user instance's favorites. */
 
-  async addFavorite(storyId) {
+  async addFavorite(story) {
     const resp = await fetch(
-      `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+      `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
       {
         body: JSON.stringify({ token: this.loginToken }),
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
 
-    const userData = await resp.json();
-    this.favorites = userData.user.favorites.map(favorite => new Story(favorite));
+    if (resp.ok) {
+      this.favorites.push(story);
+    } else {
+      throw new Error("Add new favorite didn't work :(");
+    }
+
   }
 
 
   /** Send DELETE request to remove story to favorites and updates current
   * user instance's favorites. */
-  async removeFavorite(storyId) {
+
+  async removeFavorite(story) {
 
     const resp = await fetch(
-      `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+      `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
       {
         body: JSON.stringify({ token: this.loginToken }),
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
       });
 
-    const userData = await resp.json();
-    this.favorites = userData.user.favorites.map(favorite => new Story(favorite));
+      if (resp.ok) {
+        // Splice out the story from users favorites list that matches the input
+        const indexOfMatchingStory = this.favorites.findIndex(
+          favorite => favorite.storyId === story.storyId);
+
+        this.favorites.splice(indexOfMatchingStory, 1);
+      } else {
+        throw new Error("Remove favorite didn't work :(");
+      }
+
   }
 }
