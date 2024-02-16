@@ -15,10 +15,8 @@ async function getAndShowStoriesOnStart() {
 /** Get and show more stories when user scrolls to bottom of page */
 
 async function getAndShowMoreStories() {
-  //TODO:write func
-  const newIndex = storyList.stories.length;
   await storyList.getExtraStories();
-  putExtraStoriesOnPage(newIndex);
+  putExtraStoriesOnPage(storyList.stories.length);
 }
 
 /**
@@ -72,14 +70,9 @@ function putStoriesOnPage() {
  * starting at that index to the page. */
 
 function putExtraStoriesOnPage(startingIndex) {
-  //TODO:
-  console.log("putExtraStoriesOnPage");
-  console.log("start index=", startingIndex);
-  console.log("story list length=", storyList.stories.length);
 
   // loop through all of our stories and generate HTML for them
   for (let i = startingIndex; i < storyList.stories.length; i++) {
-    console.log(storyList.stories[i]);
     const $story = generateStoryMarkup(storyList.stories[i]);
     $allStoriesList.append($story);
   }
@@ -129,6 +122,7 @@ async function handleNewStorySubmit(evt) {
 $submitStoryForm.on("submit", handleNewStorySubmit);
 
 /** Updates star button icon and adds/removes favorite on star button click. */
+
 async function handleStarClick(evt) {
   const storyId = $(evt.target).parent().attr("id");
   const selectedStory = await Story.getStoryById(storyId);
@@ -146,3 +140,19 @@ async function handleStarClick(evt) {
 }
 
 $storiesContainer.on("click", ".favorite-star", handleStarClick);
+
+
+/** Checks if the user has scrolled to the bottom of the page.
+ * If they have, then call getAndShowMoreStories() */
+
+let allowTrigger = true;
+async function checkIfAtbottom() {
+  const atBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight
+  if (atBottom && allowTrigger) {
+    allowTrigger = false;
+    await getAndShowMoreStories();
+    allowTrigger = true;
+  }
+}
+
+$(window).on("scroll", checkIfAtbottom);

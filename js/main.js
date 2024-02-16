@@ -11,7 +11,7 @@ const $storiesContainer = $(".stories-container");
 const $loginForm = $("#login-form");
 const $signupForm = $("#signup-form");
 const $submitStoryForm = $('#new-story-form');
-const $submitStoryFormButton = $("#new-story-form-button")
+const $submitStoryFormButton = $("#new-story-form-button");
 const $submitStoryFormAuthor = $("#story-author");
 const $submitStoryFormTitle = $("#story-title");
 const $submitStoryFormUrl = $("#story-url");
@@ -22,7 +22,7 @@ const $navLogOut = $("#nav-logout");
 const $navSubmitStory = $('#nav-submit-story');
 const $navFavorites = $('#nav-favorites');
 
-$(window).on("click", )
+$(window).on("click",);
 
 /** To make it easier for individual components to show just themselves, this
  * is a useful function that hides pretty much everything on the page. After
@@ -60,10 +60,3 @@ console.warn("HEY STUDENT: This program sends many debug messages to" +
   " seeing those helpful debug messages. In your browser console, click on" +
   " menu 'Default Levels' and add Verbose");
 $(start);
-
-// From https://stackoverflow.com/questions/9439725/how-to-detect-if-browser-window-is-scrolled-to-bottom
-window.onscroll = function(ev) {
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-      getAndShowMoreStories();
-  }
-};

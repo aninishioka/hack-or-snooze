@@ -98,9 +98,7 @@ class StoryList {
   /** Makes call to API to get the next 25 stories, adds them to this.stories */
 
   async getExtraStories() {
-    // TODO: Write this function
     const qs = new URLSearchParams({skip: this.stories.length});
-
     const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
       method: "GET",
     })
