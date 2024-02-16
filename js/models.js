@@ -210,24 +210,29 @@ class User {
     }
   }
 
-  async addFavorite(story) {
-    console.log("calling add favorite");
-    const resp = await fetch(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
-      body: JSON.stringify({ token: this.loginToken }),
-      method: "POST",
-      headers: { "Content-Type": "application/json" }
-    });
+  /** Sends
+   *
+   */
+
+  async addFavorite(storyId) {
+    const resp = await fetch(
+      `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+      {
+        body: JSON.stringify({ token: this.loginToken }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
 
     const userData = await resp.json();
-    this.favorites = userData.user.favorites;
+    this.favorites = userData.user.favorites.map(favorite => new Story(favorite));
   }
 
 
 
-  async removeFavorite(story) {
+  async removeFavorite(storyId) {
 
     const resp = await fetch(
-      `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
+      `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
       {
         body: JSON.stringify({ token: this.loginToken }),
         method: "DELETE",
@@ -235,6 +240,6 @@ class User {
       });
 
     const userData = await resp.json();
-    this.favorites = userData.user.favorites;
+    this.favorites = userData.user.favorites.map(favorite => new Story(favorite));
   }
 }

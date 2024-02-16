@@ -19,12 +19,14 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
+function generateStoryMarkup(story, isFav) {
   // console.debug("generateStoryMarkup", story);
 
-  const starOrNot = currentUser ?
-    `<i class="bi bi-star favorite-star"></i>` :
-    "";
+  const fillOrNotClass = isFav ? "bi-star-fill" : "bi-star";
+
+  const starOrNot = currentUser
+    ? `<i class="bi ${fillOrNotClass} favorite-star"></i>`
+    : "";
 
 
   const hostName = story.getHostName();
@@ -48,9 +50,13 @@ function putStoriesOnPage() {
 
   $allStoriesList.empty();
 
+  const favorites = currentUser ? currentUser.favorites : [];
+  const favoriteIds = favorites.map(story => story.storyId);
+  let favoriteIdsSet = new Set(favoriteIds);
+
   // loop through all of our stories and generate HTML for them
   for (let story of storyList.stories) {
-    const $story = generateStoryMarkup(story);
+    const $story = generateStoryMarkup(story, favoriteIdsSet.has(story.storyId));
     $allStoriesList.append($story);
   }
 
@@ -66,7 +72,7 @@ function putFavoriteStoriesOnPage() {
 
   // loop through all of our stories and generate HTML for them
   for (let story of currentUser.favorites) {
-    const $story = generateStoryMarkup(new Story(story));
+    const $story = generateStoryMarkup(story, true);
     $favoriteStoriesList.append($story);
   }
 
@@ -102,16 +108,12 @@ $submitStoryForm.on("submit", handleNewStorySubmit);
 
 
 async function handleStarClick(evt) {
-  const storyIndex = $(evt.target).parent().index();
-  console.log(storyIndex);
-  const story = storyList.stories[storyIndex];
-  console.log(story instanceof Story);
+  const storyId = $(evt.target).parent().attr("id");
+
   if ($(evt.target).hasClass("bi-star")) {
-    console.log("has bi-star");
-    currentUser.addFavorite(story);
+    currentUser.addFavorite(storyId);
   } else {
-    console.log("has bi-star-fill");
-    currentUser.removeFavorite(story);
+    currentUser.removeFavorite(storyId);
   }
   $(evt.target).toggleClass("bi-star-fill bi-star");
   return;
