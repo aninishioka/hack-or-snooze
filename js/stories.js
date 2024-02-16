@@ -15,8 +15,9 @@ async function getAndShowStoriesOnStart() {
 /** Get and show more stories when user scrolls to bottom of page */
 
 async function getAndShowMoreStories() {
+  const newIndex = storyList.stories.length;
   await storyList.getExtraStories();
-  putExtraStoriesOnPage(storyList.stories.length);
+  putExtraStoriesOnPage(newIndex);
 }
 
 /**
@@ -28,7 +29,7 @@ async function getAndShowMoreStories() {
 
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
-  const isFav = currentUser.favorites.some(favorite =>
+  const isFav = currentUser && currentUser.favorites.some(favorite =>
     favorite.storyId === story.storyId);
 
   const starIcon = currentUser
@@ -70,7 +71,6 @@ function putStoriesOnPage() {
  * starting at that index to the page. */
 
 function putExtraStoriesOnPage(startingIndex) {
-
   // loop through all of our stories and generate HTML for them
   for (let i = startingIndex; i < storyList.stories.length; i++) {
     const $story = generateStoryMarkup(storyList.stories[i]);
