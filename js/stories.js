@@ -15,8 +15,10 @@ async function getAndShowStoriesOnStart() {
 /** Get and show more stories when user scrolls to bottom of page */
 
 async function getAndShowMoreStories() {
-  // Call storyList.getExtra and saves the index
-  // Call putExtrastoriesonpage with that index
+  //TODO:write func
+  const newIndex = storyList.stories.length;
+  await storyList.getExtraStories();
+  putExtraStoriesOnPage(newIndex);
 }
 
 /**
@@ -70,8 +72,17 @@ function putStoriesOnPage() {
  * starting at that index to the page. */
 
 function putExtraStoriesOnPage(startingIndex) {
-  // TODO: Write this function
-  return;
+  //TODO:
+  console.log("putExtraStoriesOnPage");
+  console.log("start index=", startingIndex);
+  console.log("story list length=", storyList.stories.length);
+
+  // loop through all of our stories and generate HTML for them
+  for (let i = startingIndex; i < storyList.stories.length; i++) {
+    console.log(storyList.stories[i]);
+    const $story = generateStoryMarkup(storyList.stories[i]);
+    $allStoriesList.append($story);
+  }
 }
 
 /** Gets list of favorite stories, generates their HTML, and puts on page. */

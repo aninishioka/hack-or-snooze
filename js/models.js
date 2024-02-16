@@ -60,10 +60,8 @@ class StoryList {
     //  class directly. Why doesn't it make sense for getStories to be an
     //  instance method?
 
-    const qs = new URLSearchParams({skip});
-
     // query the /stories endpoint (no auth required)
-    const response = await fetch(`${BASE_URL}/stories?${qs}`, {
+    const response = await fetch(`${BASE_URL}/stories`, {
       method: "GET",
     });
     const storiesData = await response.json();
@@ -97,12 +95,20 @@ class StoryList {
     return storyInstance;
   }
 
-  /** Makes call to API to get the next 25 stories, adds them to this.stories
-   * and returns the index that the new stories start at */
+  /** Makes call to API to get the next 25 stories, adds them to this.stories */
 
   async getExtraStories() {
     // TODO: Write this function
-    return;
+    const qs = new URLSearchParams({skip: this.stories.length});
+
+    const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
+      method: "GET",
+    })
+    const storiesData = await resp.json();
+
+    const extraStories = storiesData.stories.map(story => new Story(story));
+
+    this.stories = this.stories.concat(extraStories);
   }
 
 }
