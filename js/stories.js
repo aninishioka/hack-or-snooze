@@ -6,7 +6,7 @@ let storyList;
 /** Get and show stories when site first loads. */
 
 async function getAndShowStoriesOnStart() {
-  storyList = await StoryList.getStories();
+  storyList = await StoryList.storyListFactory();
   $storiesLoadingMsg.remove();
 
   putStoriesOnPage();
@@ -16,7 +16,7 @@ async function getAndShowStoriesOnStart() {
 
 async function getAndShowMoreStories() {
   const newIndex = storyList.stories.length;
-  await storyList.getExtraStories();
+  await storyList.getAndAddExtraStories();
   putExtraStoriesOnPage(newIndex);
 }
 

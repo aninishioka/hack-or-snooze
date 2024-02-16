@@ -54,24 +54,12 @@ class StoryList {
    *  - returns the StoryList instance.
    */
 
-  static async getStories() {
-    // Note presence of `static` keyword: this indicates that getStories is
-    //  **not** an instance method. Rather, it is a method that is called on the
-    //  class directly. Why doesn't it make sense for getStories to be an
-    //  instance method?
+  static async storyListFactory() {
 
-    // query the /stories endpoint (no auth required)
-    const response = await fetch(`${BASE_URL}/stories`, {
-      method: "GET",
-    });
-    const storiesData = await response.json();
-
-    // turn plain old story objects from API into instances of Story class
-    const stories = storiesData.stories.map(story => new Story(story));
+    const stories = await this.getStories(0);
 
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
-
   }
 
   /** Adds story data to API, makes a Story instance, adds it to story list.
@@ -95,41 +83,64 @@ class StoryList {
     return storyInstance;
   }
 
+
+
   async getNextStoryIndex() {
+
     const storiesLen = this.stories.length;
-    const qs = new URLSearchParams({skip: storiesLen-1, limit: 1});
-    const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
-      method: "GET",
-    });
-    const storyData = await resp.json();
-    const respStoryId = storyData.stories[0].storyId;
-    if (respStoryId === this.stories[storiesLen-1].storyId) {
+    const checkerStory = this.getStories(storiesLen - 1, 1);
+    const checkerStoryId = checkerStory.stories[0].storyId;
+
+    if (checkerStoryId === this.stories[storiesLen-1].storyId) {
       return storiesLen;
     }
 
     //if fetched story exists in story list, know that there has been addition
     //else story has been deleted
-    if (storyList.stories.some(story => story.storyId === respStoryId)) {
-
+    const indexOfRespStory = storyList.stories.findIndex(
+      story => story.storyId === checkerStoryId
+    )
+    if (indexOfRespStory !== -1) {
+      // an addition has occured
+      const distanceFromEnd = storyList.stories.length - indexOfRespStory;
+      return storyList.stories.length - 1 + distanceFromEnd;
     } else {
+      // a deletion has occured
+      const checkerStories = await this.getStories(this.stories.length - 25);
 
+      // need to find starting from the en the number of stories that do not
+      // already appear on the page. The skip will then be the normal skip
+      // minus that number of elements
+
+      let counter = 0;
+      for (let i = checkerStories.length - 1; i >= 0; i--) {
+        if (this.stories.some(story => story.storyId !== checkerStories[i].storyId)) {
+          counter++;
+        } else {
+          break;
+        }
+      }
+
+      return this.stories.length - counter;
     }
   }
 
-  /** Makes call to API to get the next 25 stories, adds them to this.stories */
+  /** Makes call to API to get stories starting at index "skip" */
 
-  async getExtraStories() {
-    const nextStoryIndex = await this.getNextStoryIndex() || this.stories.length;
-    console.log("stories length=",this.stories.length);
-    console.log("next index=",nextStoryIndex);
-    const qs = new URLSearchParams({skip: nextStoryIndex});
+  async getStories(skip = 0, limit = 25) {
+    const qs = new URLSearchParams({skip, limit});
     const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
       method: "GET",
     })
     const storiesData = await resp.json();
 
-    const extraStories = storiesData.stories.map(story => new Story(story));
+    return storiesData.stories.map(story => new Story(story));
+  }
 
+
+  async getAndAddExtraStories() {
+    const nextStoryIndex = await this.getNextStoryIndex() || this.stories.length;
+    const extraStories = this.getStoriesStories(nextStoryIndex);
     this.stories = this.stories.concat(extraStories);
   }
 
