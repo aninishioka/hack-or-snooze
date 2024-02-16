@@ -82,7 +82,7 @@ class StoryList {
     });
     const storyData = await response.json();
     const storyInstance = new Story(storyData.story);
-    this.stories.push(storyInstance);
+    this.stories.unshift(storyInstance);
     return storyInstance;
   }
 }
@@ -211,7 +211,7 @@ class User {
   }
 
   async addFavorite(story) {
-
+    console.log("calling add favorite");
     const resp = await fetch(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
       body: JSON.stringify({ token: this.loginToken }),
       method: "POST",

@@ -66,7 +66,7 @@ function putFavoriteStoriesOnPage() {
 
   // loop through all of our stories and generate HTML for them
   for (let story of currentUser.favorites) {
-    const $story = generateStoryMarkup(story);
+    const $story = generateStoryMarkup(new Story(story));
     $favoriteStoriesList.append($story);
   }
 
@@ -102,6 +102,18 @@ $submitStoryForm.on("submit", handleNewStorySubmit);
 
 
 async function handleStarClick(evt) {
+  const storyIndex = $(evt.target).parent().index();
+  console.log(storyIndex);
+  const story = storyList.stories[storyIndex];
+  console.log(story instanceof Story);
+  if ($(evt.target).hasClass("bi-star")) {
+    console.log("has bi-star");
+    currentUser.addFavorite(story);
+  } else {
+    console.log("has bi-star-fill");
+    currentUser.removeFavorite(story);
+  }
+  $(evt.target).toggleClass("bi-star-fill bi-star");
   return;
 }
 
