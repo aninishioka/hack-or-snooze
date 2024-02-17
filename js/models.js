@@ -64,7 +64,7 @@ class StoryList {
 
   static async storyListFactory() {
 
-    const stories = await this.getStories(0);
+    const stories = await getStories(0);
 
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
@@ -96,7 +96,7 @@ class StoryList {
   async getNextStoryIndex() {
 
     const storiesLen = this.stories.length;
-    const checkerStory = this.getStories(storiesLen - 1, 1);
+    const checkerStory = await getStories(storiesLen - 1, 1);
     const checkerStoryId = checkerStory.stories[0].storyId;
 
     if (checkerStoryId === this.stories[storiesLen-1].storyId) {
@@ -114,7 +114,7 @@ class StoryList {
       return storyList.stories.length - 1 + distanceFromEnd;
     } else {
       // a deletion has occured
-      const checkerStories = await this.getStories(this.stories.length - 25);
+      const checkerStories = await getStories(this.stories.length - 25);
 
       // need to find starting from the en the number of stories that do not
       // already appear on the page. The skip will then be the normal skip
@@ -135,7 +135,7 @@ class StoryList {
 
   /** Makes call to API to get stories starting at index "skip" */
 
-  async getStories(skip = 0, limit = 25) {
+  static async getStories(skip = 0, limit = 25) {
     const qs = new URLSearchParams({skip, limit});
     const resp = await fetch(`${BASE_URL}/stories?${qs}`, {
       method: "GET",
@@ -148,7 +148,7 @@ class StoryList {
 
   async getAndAddExtraStories() {
     const nextStoryIndex = await this.getNextStoryIndex() || this.stories.length;
-    const extraStories = this.getStoriesStories(nextStoryIndex);
+    const extraStories = await getStories(nextStoryIndex);
     this.stories = this.stories.concat(extraStories);
   }
 
