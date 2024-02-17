@@ -122,11 +122,10 @@ class StoryList {
 
       let counter = 0;
       for (let i = checkerStories.length - 1; i >= 0; i--) {
-        if (this.stories.some(story => story.storyId !== checkerStories[i].storyId)) {
-          counter++;
-        } else {
+        if (this.stories.some(story => story.storyId === checkerStories[i].storyId)) {
           break;
         }
+        counter++;
       }
 
       return this.stories.length - counter;
@@ -147,7 +146,8 @@ class StoryList {
 
 
   async getAndAddExtraStories() {
-    const nextStoryIndex = await this.getNextStoryIndex() || this.stories.length;
+    const nextStoryIndex = await this.getNextStoryIndex();
+    console.log(nextStoryIndex);
     const extraStories = await StoryList.getStories(nextStoryIndex);
     this.stories = this.stories.concat(extraStories);
   }
