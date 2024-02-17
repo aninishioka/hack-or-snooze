@@ -34,6 +34,14 @@ class Story {
     const storyData = await resp.json();
     return new Story(storyData.story);
   }
+
+  static async deleteStory(storyId) {
+    const resp = await fetch(`${BASE_URL}/stories/${storyId}`, {
+      method: "DELETE",
+      body: JSON.stringify({token: currentUser.token})
+    });
+
+  }
 }
 
 
